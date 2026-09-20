@@ -1,11 +1,1305 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>ZOKOTO</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ZOKOTO — Clinical Training Simulator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    background: #07111f;
+    color: #f4f8ff;
+    min-height: 100vh;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    height: 72px;
+    padding: 0 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(7,17,31,.92);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 4px;
+}
+
+.logo span {
+    color: #48d7c5;
+}
+
+.badge {
+    padding: 7px 12px;
+    border: 1px solid rgba(72,215,197,.35);
+    color: #48d7c5;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+/* ================= HOME ================= */
+
+.home {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.hero {
+    width: min(900px, 100%);
+    text-align: center;
+}
+
+.eyebrow {
+    color: #48d7c5;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 10vw, 100px);
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+}
+
+.hero h1 span {
+    color: #48d7c5;
+}
+
+.hero h2 {
+    font-size: clamp(20px, 4vw, 34px);
+    margin-bottom: 22px;
+}
+
+.hero p {
+    max-width: 650px;
+    margin: auto;
+    color: #9eafc5;
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+.start-btn {
+    margin-top: 35px;
+    padding: 17px 38px;
+    border: none;
+    border-radius: 12px;
+    background: #48d7c5;
+    color: #06131c;
+    font-weight: 900;
+    font-size: 17px;
+    box-shadow: 0 12px 35px rgba(72,215,197,.18);
+}
+
+.start-btn:hover {
+    transform: translateY(-2px);
+}
+
+.features {
+    margin-top: 55px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+}
+
+.feature {
+    background: #0c1b2d;
+    border: 1px solid rgba(255,255,255,.07);
+    padding: 20px;
+    border-radius: 14px;
+}
+
+.feature strong {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.feature small {
+    color: #8ea0b6;
+}
+
+/* ================= CASE ================= */
+
+.case {
+    display: none;
+    padding: 30px 5%;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.case-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.case-title h1 {
+    font-size: clamp(25px,4vw,42px);
+}
+
+.case-title p {
+    color: #879bb4;
+    margin-top: 6px;
+}
+
+.status-pill {
+    padding: 9px 15px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    background: #32171b;
+    color: #ff7c87;
+    border: 1px solid #633038;
+}
+
+.warning {
+    background: #291d10;
+    border: 1px solid #5b421d;
+    color: #e9c57d;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    font-size: 13px;
+}
+
+/* ================= GRID ================= */
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 20px;
+}
+
+.card {
+    background: #0b1a2b;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    font-size: 17px;
+    margin-bottom: 18px;
+}
+
+.patient {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #162b42;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 45px;
+}
+
+.patient h2 {
+    font-size: 25px;
+    margin-bottom: 6px;
+}
+
+.patient p {
+    color: #9aabc0;
+    line-height: 1.6;
+}
+
+/* ================= MONITOR ================= */
+
+.monitor {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+}
+
+.vital {
+    background: #07111f;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+.vital label {
+    display: block;
+    color: #73879e;
+    font-size: 11px;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+}
+
+.vital strong {
+    font-size: 24px;
+}
+
+.vital small {
+    color: #71869c;
+}
+
+/* ================= ACTIONS ================= */
+
+.actions {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+}
+
+.action {
+    padding: 14px;
+    background: #10243a;
+    color: #eaf2fb;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    text-align: left;
+    transition: .2s;
+}
+
+.action:hover {
+    border-color: #48d7c5;
+    transform: translateY(-1px);
+}
+
+.action.done {
+    opacity: .45;
+}
+
+.action small {
+    display: block;
+    color: #738ba5;
+    margin-top: 4px;
+}
+
+/* ================= LOG ================= */
+
+.log {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.log-item {
+    border-left: 2px solid #48d7c5;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,.025);
+    font-size: 13px;
+}
+
+.log-item span {
+    color: #6f849d;
+    font-size: 11px;
+}
+
+/* ================= REASONING ================= */
+
+textarea {
+    width: 100%;
+    min-height: 130px;
+    background: #07111f;
+    border: 1px solid rgba(255,255,255,.1);
+    color: white;
+    border-radius: 10px;
+    padding: 14px;
+    resize: vertical;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #48d7c5;
+}
+
+.submit-reasoning {
+    margin-top: 10px;
+    padding: 11px 17px;
+    border: none;
+    border-radius: 9px;
+    background: #1b354d;
+    color: white;
+}
+
+/* ================= DEBRIEF ================= */
+
+.debrief {
+    display: none;
+    margin-top: 25px;
+}
+
+.debrief-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+}
+
+.feedback {
+    background: #0c1b2d;
+    border: 1px solid rgba(255,255,255,.07);
+    padding: 20px;
+    border-radius: 13px;
+}
+
+.feedback h3 {
+    margin-bottom: 10px;
+}
+
+.feedback p,
+.feedback li {
+    color: #9eafc5;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.feedback ul {
+    padding-left: 18px;
+}
+
+.restart {
+    margin-top: 20px;
+    padding: 14px 22px;
+    background: #48d7c5;
+    color: #06131c;
+    border: none;
+    border-radius: 9px;
+    font-weight: 800;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:850px) {
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .features,
+    .debrief-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .monitor {
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media(max-width:500px) {
+
+    .header {
+        padding: 0 20px;
+    }
+
+    .case {
+        padding: 22px 15px;
+    }
+
+    .patient {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .avatar {
+        margin: auto;
+    }
+
+    .actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
+
 <body>
-  <h1>ZOKOTO</h1>
-  <p>Medical Clinical Training Platform</p>
-  <button>Start Case</button>
+
+<div class="app">
+
+<header class="header">
+    <div class="logo">ZO<span>K</span>OTO</div>
+    <div class="badge">CLINICAL TRAINING SIMULATOR</div>
+</header>
+
+
+<!-- ================= HOME ================= -->
+
+<section class="home" id="home">
+
+    <div class="hero">
+
+        <div class="eyebrow">Clinical reasoning • Simulation • Decision making</div>
+
+        <h1>ZO<span>K</span>OTO</h1>
+
+        <h2>Think like a clinician.</h2>
+
+        <p>
+            ZOKOTO is a clinical training environment where your decisions
+            change the patient's condition. Don't just find the answer.
+            Assess. Prioritize. Act. Reassess.
+        </p>
+
+        <button class="start-btn" onclick="startCase()">
+            START CASE →
+        </button>
+
+        <div class="features">
+
+            <div class="feature">
+                <strong>🧠 Clinical Reasoning</strong>
+                <small>Practice prioritization and decision-making.</small>
+            </div>
+
+            <div class="feature">
+                <strong>🫀 Dynamic Patient</strong>
+                <small>The patient responds to your actions.</small>
+            </div>
+
+            <div class="feature">
+                <strong>📊 Debrief</strong>
+                <small>Review your reasoning sequence after the case.</small>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CASE ================= -->
+
+<section class="case" id="case">
+
+    <div class="case-top">
+
+        <div class="case-title">
+            <h1>CASE 001 — SHOCK</h1>
+            <p>Traumatic hemorrhagic shock</p>
+        </div>
+
+        <div class="status-pill" id="statusPill">
+            UNSTABLE
+        </div>
+
+    </div>
+
+    <div class="warning">
+        EDUCATIONAL SIMULATION — This prototype is for learning and
+        clinical reasoning practice, not real-patient medical care.
+    </div>
+
+
+    <div class="main-grid">
+
+        <div>
+
+            <!-- PATIENT -->
+
+            <div class="card">
+
+                <h2>🚑 Emergency Department — 02:13 AM</h2>
+
+                <div class="patient">
+
+                    <div class="avatar">🧑🏻</div>
+
+                    <div>
+                        <h2>24-year-old male</h2>
+
+                        <p>
+                            Road traffic accident 25 minutes ago.
+                            Patient is pale, anxious and complaining
+                            of severe abdominal pain.
+                        </p>
+
+                        <p style="margin-top:10px;">
+                            <strong>Arrival:</strong>
+                            "Doctor... I feel like I'm going to pass out."
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- VITALS -->
+
+            <div class="card">
+
+                <h2>🖥️ Patient Monitor</h2>
+
+                <div class="monitor">
+
+                    <div class="vital">
+                        <label>Heart Rate</label>
+                        <strong id="hr">132</strong>
+                        <small>bpm</small>
+                    </div>
+
+                    <div class="vital">
+                        <label>Blood Pressure</label>
+                        <strong id="bp">82/48</strong>
+                        <small>mmHg</small>
+                    </div>
+
+                    <div class="vital">
+                        <label>Respiratory Rate</label>
+                        <strong id="rr">28</strong>
+                        <small>/min</small>
+                    </div>
+
+                    <div class="vital">
+                        <label>SpO₂</label>
+                        <strong id="spo2">94</strong>
+                        <small>%</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="card">
+
+                <h2>⚡ What will you do?</h2>
+
+                <div class="actions">
+
+                    <button class="action" onclick="performAction('airway')">
+                        Assess Airway
+                        <small>Is the airway patent?</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('breathing')">
+                        Assess Breathing
+                        <small>Look for immediate threats.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('circulation')">
+                        Assess Circulation
+                        <small>Perfusion, pulse, skin, bleeding.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('history')">
+                        Focused History
+                        <small>Obtain relevant information.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('iv')">
+                        Establish IV Access
+                        <small>Begin emergency access.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('labs')">
+                        Order Labs
+                        <small>Support assessment.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('fast')">
+                        Perform FAST
+                        <small>Look for internal bleeding.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('ct')">
+                        Send for CT
+                        <small>Further imaging.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('help')">
+                        Call Trauma Team
+                        <small>Escalate early.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('resuscitate')">
+                        Start Resuscitation
+                        <small>Begin hemorrhage-focused management.</small>
+                    </button>
+
+                    <button class="action" onclick="performAction('reassess')">
+                        Reassess Patient
+                        <small>Check response to intervention.</small>
+                    </button>
+
+                    <button class="action" onclick="finishCase()">
+                        End Case
+                        <small>Generate your debrief.</small>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- REASONING -->
+
+            <div class="card">
+
+                <h2>🧠 Your Clinical Reasoning</h2>
+
+                <p style="color:#91a5bd; margin-bottom:12px;">
+                    Before finishing, explain what you think is happening
+                    and why you prioritized your actions.
+                </p>
+
+                <textarea
+                    id="reasoning"
+                    placeholder="Example: I think the patient is in hemorrhagic shock because..."
+                ></textarea>
+
+                <button class="submit-reasoning" onclick="saveReasoning()">
+                    Save reasoning
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT COLUMN -->
+
+        <div>
+
+            <div class="card">
+
+                <h2>📋 Decision Log</h2>
+
+                <div class="log" id="log">
+
+                    <div class="log-item">
+                        <span>02:13</span><br>
+                        Patient arrived in the emergency department.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>🎯 Case Objective</h2>
+
+                <p style="color:#9eafc5; line-height:1.7;">
+                    Recognize shock, identify the likely cause,
+                    prioritize immediate assessment and intervention,
+                    and repeatedly reassess the patient's response.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>🧩 ZOKOTO Engine</h2>
+
+                <p style="color:#9eafc5; line-height:1.7;">
+                    Patient state is changing based on your decisions.
+                </p>
+
+                <div style="
+                    margin-top:15px;
+                    height:8px;
+                    background:#07111f;
+                    border-radius:20px;
+                    overflow:hidden;
+                ">
+                    <div id="progress"
+                         style="
+                         width:15%;
+                         height:100%;
+                         background:#48d7c5;
+                         transition:.4s;
+                         ">
+                    </div>
+                </div>
+
+                <p style="
+                    margin-top:8px;
+                    font-size:12px;
+                    color:#6f849d;
+                ">
+                    Case progression
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= DEBRIEF ================= -->
+
+    <div class="debrief" id="debrief">
+
+        <div class="card">
+
+            <h2>🧠 ZOKOTO DEBRIEF</h2>
+
+            <p style="color:#8fa3bb;">
+                This feedback is educational and does not represent
+                a clinical competence assessment.
+            </p>
+
+        </div>
+
+
+        <div class="debrief-grid">
+
+            <div class="feedback">
+
+                <h3>✅ What you recognized</h3>
+
+                <ul id="recognized"></ul>
+
+            </div>
+
+
+            <div class="feedback">
+
+                <h3>⚠️ Reasoning opportunities</h3>
+
+                <ul id="missed"></ul>
+
+            </div>
+
+
+            <div class="feedback">
+
+                <h3>🧠 Reasoning pattern</h3>
+
+                <p id="pattern"></p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📝 Your reasoning note</h2>
+
+            <p id="reasoningOutput"
+               style="color:#9eafc5; line-height:1.7;">
+            </p>
+
+            <button class="restart" onclick="restartCase()">
+                RUN CASE AGAIN
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   ZOKOTO — CASE ENGINE v0.1
+   ===================================================== */
+
+let state = {
+    started: false,
+
+    time: 13,
+
+    hr: 132,
+    bpSys: 82,
+    bpDia: 48,
+    rr: 28,
+    spo2: 94,
+
+    actions: [],
+
+    airway: false,
+    breathing: false,
+    circulation: false,
+    history: false,
+    iv: false,
+    labs: false,
+    fast: false,
+    ct: false,
+    help: false,
+    resuscitate: false,
+    reassessed: false,
+
+    reasoning: ""
+};
+
+
+/* ================= START ================= */
+
+function startCase() {
+
+    document.getElementById("home").style.display = "none";
+    document.getElementById("case").style.display = "block";
+
+    state.started = true;
+
+    addLog(
+        "02:13",
+        "You entered the case. The patient is unstable."
+    );
+}
+
+
+/* ================= ACTION ENGINE ================= */
+
+function performAction(action) {
+
+    if (!state.started) return;
+
+    if (state.actions.includes(action)) {
+
+        addLog(
+            getTime(),
+            "You already performed: " + actionName(action)
+        );
+
+        return;
+    }
+
+    state.actions.push(action);
+    state[action] = true;
+
+    let message = "";
+
+    switch(action) {
+
+        case "airway":
+
+            message =
+            "Airway is currently patent. The patient can speak. No immediate airway obstruction identified.";
+
+            break;
+
+
+        case "breathing":
+
+            message =
+            "Bilateral air entry is present. No obvious immediate respiratory catastrophe identified on this simplified simulation.";
+
+            break;
+
+
+        case "circulation":
+
+            message =
+            "Weak peripheral pulses, cool pale skin and delayed capillary refill. Abdomen is tender and distended. Shock is strongly suspected.";
+
+            break;
+
+
+        case "history":
+
+            message =
+            "Witness reports significant blunt abdominal trauma. Patient briefly lost consciousness and has worsening abdominal pain.";
+
+            break;
+
+
+        case "iv":
+
+            message =
+            "IV access established. Blood sampling and preparation for emergency resuscitation can proceed.";
+
+            break;
+
+
+        case "labs":
+
+            message =
+            "Initial testing: elevated lactate and metabolic evidence of poor perfusion. Blood type and crossmatch requested.";
+
+            break;
+
+
+        case "fast":
+
+            message =
+            "FAST is positive for free fluid in the abdomen. In this simulation, internal hemorrhage is now the leading concern.";
+
+            break;
+
+
+        case "ct":
+
+            if (state.bpSys < 90) {
+
+                state.bpSys = 70;
+                state.hr = 145;
+
+                message =
+                "The patient remained profoundly unstable while being prepared for CT. His blood pressure deteriorated. In this educational scenario, further imaging should not delay emergency stabilization and definitive hemorrhage control.";
+
+            } else {
+
+                message =
+                "CT requested. Imaging may be useful when the patient's condition and management pathway allow it.";
+
+            }
+
+            break;
+
+
+        case "help":
+
+            message =
+            "Trauma team / senior support activated. Team-based management is now underway.";
+
+            break;
+
+
+        case "resuscitate":
+
+            if (!state.iv) {
+
+                message =
+                "Resuscitation planning initiated, but IV access has not yet been established.";
+
+            } else {
+
+                state.hr = Math.max(108, state.hr - 15);
+                state.bpSys = Math.min(98, state.bpSys + 12);
+                state.rr = Math.max(22, state.rr - 3);
+
+                message =
+                "Hemorrhage-focused resuscitation initiated according to the simulation pathway. The patient's perfusion begins to improve.";
+
+            }
+
+            break;
+
+
+        case "reassess":
+
+            state.reassessed = true;
+
+            if (state.resuscitate && state.iv) {
+
+                state.hr = 112;
+                state.bpSys = 96;
+                state.bpDia = 60;
+                state.rr = 23;
+
+                message =
+                "Reassessment: heart rate and blood pressure have improved compared with arrival, but the patient remains at risk and requires definitive management.";
+
+            } else {
+
+                state.hr = Math.min(155, state.hr + 8);
+                state.bpSys = Math.max(65, state.bpSys - 8);
+
+                message =
+                "Reassessment: the patient remains unstable. Immediate priorities have not yet been adequately addressed.";
+
+            }
+
+            break;
+    }
+
+
+    updateVitals();
+
+    addLog(getTime(), message);
+
+    updateProgress();
+}
+
+
+/* ================= LOGIC ================= */
+
+function actionName(action) {
+
+    const names = {
+        airway: "airway assessment",
+        breathing: "breathing assessment",
+        circulation: "circulation assessment",
+        history: "focused history",
+        iv: "IV access",
+        labs: "laboratory investigations",
+        fast: "FAST examination",
+        ct: "CT imaging",
+        help: "trauma team activation",
+        resuscitate: "resuscitation",
+        reassess: "reassessment"
+    };
+
+    return names[action] || action;
+}
+
+
+function getTime() {
+
+    state.time++;
+
+    let hour = 2;
+    let minute = state.time;
+
+    if (minute >= 60) {
+        hour++;
+        minute -= 60;
+    }
+
+    return "02:" + String(minute).padStart(2,"0");
+}
+
+
+function addLog(time, message) {
+
+    const log = document.getElementById("log");
+
+    const item = document.createElement("div");
+
+    item.className = "log-item";
+
+    item.innerHTML =
+        "<span>" + time + "</span><br>" +
+        message;
+
+    log.appendChild(item);
+
+    log.scrollTop = log.scrollHeight;
+}
+
+
+function updateVitals() {
+
+    document.getElementById("hr").textContent =
+        state.hr;
+
+    document.getElementById("bp").textContent =
+        state.bpSys + "/" + state.bpDia;
+
+    document.getElementById("rr").textContent =
+        state.rr;
+
+    document.getElementById("spo2").textContent =
+        state.spo2;
+
+    const pill =
+        document.getElementById("statusPill");
+
+    if (state.bpSys < 90) {
+
+        pill.textContent = "UNSTABLE";
+
+    } else {
+
+        pill.textContent = "PARTIALLY STABILIZED";
+
+    }
+}
+
+
+function updateProgress() {
+
+    const total = 10;
+
+    const done =
+        state.actions.length;
+
+    const percentage =
+        Math.min(100, 15 + (done / total) * 85);
+
+    document.getElementById("progress")
+        .style.width = percentage + "%";
+}
+
+
+/* ================= REASONING ================= */
+
+function saveReasoning() {
+
+    state.reasoning =
+        document.getElementById("reasoning").value.trim();
+
+    if (!state.reasoning) {
+
+        addLog(
+            getTime(),
+            "No reasoning note was entered."
+        );
+
+        return;
+    }
+
+    addLog(
+        getTime(),
+        "Clinical reasoning note saved."
+    );
+}
+
+
+/* ================= DEBRIEF ================= */
+
+function finishCase() {
+
+    document.getElementById("debrief").style.display =
+        "block";
+
+    let recognized = [];
+    let missed = [];
+
+    if (state.circulation)
+        recognized.push("You assessed circulation and identified poor perfusion.");
+
+    if (state.fast)
+        recognized.push("You investigated for internal bleeding with FAST.");
+
+    if (state.iv)
+        recognized.push("You established IV access.");
+
+    if (state.help)
+        recognized.push("You escalated to the trauma team.");
+
+    if (state.resuscitate)
+        recognized.push("You initiated resuscitation.");
+
+    if (state.reassessed)
+        recognized.push("You reassessed the patient's response.");
+
+    if (!state.circulation)
+        missed.push("Circulation assessment was not documented.");
+
+    if (!state.fast)
+        missed.push("FAST was not performed in the simulation.");
+
+    if (!state.help)
+        missed.push("Early escalation to the trauma team was missed.");
+
+    if (!state.resuscitate)
+        missed.push("Hemorrhage-focused resuscitation was not initiated.");
+
+    if (!state.reassessed)
+        missed.push("The patient was not reassessed after intervention.");
+
+    if (state.ct && state.bpSys < 90)
+        missed.push("CT was pursued while the patient remained profoundly unstable.");
+
+    if (recognized.length === 0)
+        recognized.push("The simulation needs more documented decisions.");
+
+    if (missed.length === 0)
+        missed.push("No major simulated reasoning opportunity was identified.");
+
+    const recognizedList =
+        document.getElementById("recognized");
+
+    recognizedList.innerHTML = "";
+
+    recognized.forEach(item => {
+
+        const li =
+            document.createElement("li");
+
+        li.textContent = item;
+
+        recognizedList.appendChild(li);
+    });
+
+
+    const missedList =
+        document.getElementById("missed");
+
+    missedList.innerHTML = "";
+
+    missed.forEach(item => {
+
+        const li =
+            document.createElement("li");
+
+        li.textContent = item;
+
+        missedList.appendChild(li);
+    });
+
+
+    let pattern = "";
+
+    if (state.circulation &&
+        state.iv &&
+        state.fast &&
+        state.resuscitate &&
+        state.reassessed) {
+
+        pattern =
+        "Your sequence shows an attempt to move from recognition → investigation → intervention → reassessment.";
+
+    } else if (state.ct && !state.resuscitate) {
+
+        pattern =
+        "The sequence suggests that diagnostic imaging was prioritized before sufficient stabilization. In unstable patients, prioritization is a key clinical reasoning skill.";
+
+    } else {
+
+        pattern =
+        "Your next development area is building a consistent sequence: identify immediate threats → assess perfusion → identify likely cause → intervene → reassess.";
+
+    }
+
+    document.getElementById("pattern").textContent =
+        pattern;
+
+
+    document.getElementById("reasoningOutput").textContent =
+        state.reasoning ||
+        "No reasoning note was saved for this run.";
+
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+    });
+}
+
+
+/* ================= RESTART ================= */
+
+function restartCase() {
+
+    location.reload();
+}
+
+</script>
+
 </body>
 </html>
